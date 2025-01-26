@@ -204,7 +204,7 @@ server {
 sudo systemctl reload nginx
 ```
 
-**Visit: http://<EC2-Public-IP> to see the app.**
+### Visit: http://<EC2-Public-IP> to see the app.
 
 
 
