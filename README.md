@@ -89,7 +89,11 @@ app.listen(port, () => {
 node app.js
 ```
 
-# Note: or we can use git clone url if we have existing backend application 
+# Note: or we can use git clone url if we have existing backend application go inside backend app make sure server.js file or app.js file over there and do 
+**it will install required dependencies which are required to run this backend app**
+```
+npm i
+``` 
 
 
 ### Note:Security Group Configuration
@@ -131,17 +135,86 @@ npm i -g pm2
 ```
 pm2 start app.js
 ```
+or
+```
+pm2 start server.js
+```
 
 
-**5. Install and Configure NGINX**
+**5. Install and Configure NGINX & frontend deployment **
 ```
 sudo apt install nginx
 sudo systemctl start nginx
 sudo systemctl status nginx
 ```
 ### Visit: http://<EC2-Public-IP> to see the default NGINX page.
-Configure NGINX
+
+
+**Deploy Frontend React App**
+- go to frontend location
+- install required dependencies
+  ```
+  npm i
+  ```
+  **Build the React app :**
+  ```
+  npm run build
+  ```
+
+**move this build to location **
+```
+sudo cp -r dist /var/www/html
+```
+
+
+
+
+**Update NGINX Configuration:**
 ```
 cd /etc/nginx/sites-available
 sudo vim default
 ```
+
+
+**Update the default file:**
+```
+server {
+    listen 80 default_server;
+    server_name _;
+
+    location / {
+        root /var/www/html/dist;
+        index index.html;
+        try_files $uri /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+**Restart NGINX:**
+```
+sudo systemctl reload nginx
+```
+
+**Visit: http://<EC2-Public-IP> to see the app.**
+
+
+
+**Important Notes**
+
+- Frontend Deployment: Ensure the dist folder is moved to /var/www/html.
+- Make sure update inside frontend code wherever you calling backend api make sure check public ip /static ip of your running app
+- Backend API Integration: Update the frontend API calls to use the backend public IP.
+-Use below command when you updated inside backend app want to see latest changes 
+  ```
+pm2 reload all
+```
+- SSL Renewal: Use certbot renew to renew SSL certificates automatically.
