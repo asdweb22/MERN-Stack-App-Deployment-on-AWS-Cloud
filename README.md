@@ -213,8 +213,8 @@ sudo systemctl reload nginx
 - Frontend Deployment: Ensure the dist folder is moved to /var/www/html.
 - Make sure update inside frontend code wherever you calling backend api make sure check public ip /static ip of your running app
 - Backend API Integration: Update the frontend API calls to use the backend public IP.
--Use below command when you updated inside backend app want to see latest changes 
+- Use below command when you updated inside backend app want to see latest changes 
   ```
-pm2 reload all
-```
+  pm2 reload all
+  ```
 - SSL Renewal: Use certbot renew to renew SSL certificates automatically.
